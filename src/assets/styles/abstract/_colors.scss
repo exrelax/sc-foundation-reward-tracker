@@ -1,0 +1,80 @@
+
+$color: (
+        white: #fff,
+  black: #000,
+  gray-100: #e6e6e6,
+  gray-200: #cccccc,
+  gray-300: #b3b3b3,
+  gray-400: #999999,
+  gray-500: #808080,
+  gray-700: #333,
+  gray-800: #222,
+  gray-900: #101010,
+);
+
+$color-white: #fff;
+$color-black: #000;
+
+$color-gray-100: #e6e6e6;
+$color-gray-200: #cccccc;
+$color-gray-300: #b3b3b3;
+$color-gray-400: #999999;
+$color-gray-500: #808080;
+$color-gray-700: #333;
+$color-gray-800: #222;
+$color-gray-900: #101010;
+
+  // RSI colors
+$color-rsi-dark-theme: (
+  secondary-50: #e8ebed,
+  secondary-100: #d2d7db,
+  secondary-300: #a3acb2,
+  secondary-400: #8d9aa0,
+  secondary-800: #334752,
+  secondary-900: #20323a,
+  complementary-white: $color-white,
+  complementary-blue-accent-dark: #0077cb,
+  gradient-orange-light: linear-gradient(180deg,#128feb 0%,#c88927),
+);
+
+$color-orion: (
+  primary-1-rgb: 10 29 41,
+  primary-2-rgb: 15 44 62,
+  primary-3-rgb: 20 58 82,
+  primary-4-rgb: 25 73 103,
+  primary-5-rgb: 30 87 123,
+  primary-6-rgb: 40 117 164,
+  primary-7-rgb: 111 178 220,
+  primary-8-rgb: 173 211 235,
+  neutral-1-rgb: 0 0 0,
+  neutral-2-rgb: 88 103 116,
+  neutral-3-rgb: 168 179 189,
+  neutral-4-rgb: 255 255 255,
+  accent-1-rgb: 84 173 247,
+  accent-2-rgb: 109 185 248,
+  accent-3-rgb: 158 208 250,
+  green-1-rgb: 133 198 162,
+  green-2-rgb: 168 214 189,
+  green-3-rgb: 203 231 216,
+  orange-1-rgb: 233 148 73,
+  orange-2-rgb: 238 175 119,
+  orange-3-rgb: 244 201 164,
+  red-1-rgb: 255 128 128,
+  red-2-rgb: 255 153 153,
+  red-3-rgb: 255 179 179,
+  staff-1-rgb: 243 208 37,
+  staff-2-rgb: 247 224 110,
+  staff-3-rgb: 250 235 158,
+  transaction-1-rgb: 215 112 15,
+  transaction-2-rgb: 240 137 40,
+  transaction-3-rgb: 250 215 183,
+  live-1-rgb: 153 51 51,
+  live-2-rgb: 191 64 64,
+  live-3-rgb: 217 140 140,
+  premium-1-rgb: 102 70 26,
+  premium-2-rgb: 122 85 31,
+  premium-3-rgb: 143 98 36,
+  premium-4-rgb: 184 126 46,
+  premium-5-rgb: 209 152 71,
+  premium-6-rgb: 219 175 112,
+)

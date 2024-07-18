@@ -1,0 +1,27 @@
+@use 'sass:map';
+
+:root {
+  @each $name, $color in $color {
+    --color-#{"" + $name}: #{$color};
+  }
+
+  @each $name, $color in $color-rsi-dark-theme {
+    --color-rsi-dark-theme-#{$name}: #{$color};
+  }
+
+  @each $name, $color in $color-orion {
+    --color-orion-#{$name}: #{$color};
+  }
+
+  @each $name, $value in $font-size {
+    --font-size-#{$name}: #{$value};
+  }
+
+  @each $name, $value in $line-height {
+    --line-height-#{$name}: #{$value};
+  }
+
+  @each $name, $value in $spacing-grid {
+    --spacing-grid-#{$name}: #{$value};
+  }
+}

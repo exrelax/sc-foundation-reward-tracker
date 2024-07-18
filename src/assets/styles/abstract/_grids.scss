@@ -1,0 +1,66 @@
+@use 'sass:map';
+@use 'sass:math';
+
+$grid-breakpoints: (
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1400px,
+        xxxl: 1920px,
+);
+
+$container-max-widths: (
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1140px,
+        xxl: 1320px,
+        xxxl: 1600px,
+);
+
+$grid-columns: 12;
+$grid-gutter-width: 32px;
+$page-wrapper-width: 2880px;
+$page-content-width: 1600px;
+
+// SPACING GRID
+$spacing-grid: (
+        5: 4,
+        10: 8,
+        20: 16,
+        30: 24,
+        40: 32,
+        50: 48,
+        60: 64,
+        70: 96,
+        80: 128,
+        90: 160,
+        100: 192,
+        110: 256,
+);
+
+$spacing-grid-size-mapping: (
+        sm: 10,
+        md: 30,
+        lg: 40,
+        xl: 50,
+        xxl: 60,
+        xxxl: 80,
+);
+
+@each $name, $value in $spacing-grid {
+  $spacing-grid: map.set($spacing-grid, '#{$name}-px', $value * 1px);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-rem', math.div($value, $body-font-size) * 1rem);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-percent', math.div($value, $body-font-size) * 100%);
+}
+
+@each $name, $value in $spacing-grid-size-mapping {
+  $temp-value: map.get($spacing-grid, $value);
+  $spacing-grid: map.set($spacing-grid, '#{$name}', $temp-value);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-px', $temp-value * 1px);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-rem', math.div($temp-value, $body-font-size) * 1rem);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-percent', math.div($temp-value, $body-font-size) * 100%);
+}
+
