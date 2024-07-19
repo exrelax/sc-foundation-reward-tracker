@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs'
 
 interface GuidingSession {
     id: string;
@@ -38,8 +39,7 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
     const sessionIsValid = (session: GuidingSession) => {
         return sessionRolesIsValid(session.roles) &&
             session.guidingCategory_ids.length > 0 &&
-            session.fromDate != null &&
-            session.completed != null
+            session.fromDate != null
     }
 
     const addSession = (session: GuidingSession) => {
@@ -47,9 +47,14 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             return false
         }
 
+        const fromDateDjs = dayjs(session.fromDate)
+        const toDateDjs = session.toDate ? dayjs(session.toDate) : null
+        const completed = session.toDate != null && fromDateDjs.isBefore(toDateDjs)
+
         sessions.value.push({
             ...session,
             id: uuidv4(),
+            completed
         })
 
         return true

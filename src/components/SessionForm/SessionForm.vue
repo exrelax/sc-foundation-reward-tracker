@@ -30,7 +30,6 @@ const submit = () => {
     toDate: endDateTimeDjs.toDate(),
     roles,
     guidingCategory_ids: selectedGuideCategories.value,
-    completed: false,
   }
 
   const result = guidingSessionsStore.addSession(payload)
