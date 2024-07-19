@@ -8,6 +8,7 @@ import Toasts from '@/components/Toasts.vue'
     <div class="container">
       <nav>
         <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/accounts">Accounts</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>

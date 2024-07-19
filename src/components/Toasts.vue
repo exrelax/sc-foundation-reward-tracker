@@ -36,7 +36,11 @@ const close = id => {
 
 onMounted(() => {
   interval = setInterval(() => {
-    toastAgeValues.value = getToastsWithAgeValues()
+    try {
+      toastAgeValues.value = getToastsWithAgeValues()
+    } catch (error) {
+      console.error(error)
+    }
   }, 1000)
 })
 

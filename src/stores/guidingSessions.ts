@@ -3,6 +3,12 @@ import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 
+interface Account {
+    id: string;
+    handle: string;
+    monitored?: boolean;
+}
+
 interface GuidingSession {
     id: string;
     roles: {
@@ -16,7 +22,50 @@ interface GuidingSession {
 }
 
 export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
+    const accounts = ref([])
     const sessions = ref([])
+
+    const createAccount = (handle: string, monitored: boolean = true) => {
+        const account = getAccountByHandle.value(handle)
+
+        if (account) {
+            return
+        }
+
+        accounts.value.push({
+            id: uuidv4(),
+            handle,
+            monitored
+        })
+    }
+
+    const removeAccountById = (id: string) => {
+        const index = accounts.value.findIndex(account => account.id === id)
+
+        if (index > -1) {
+            accounts.value.splice(index, 1)
+        }
+    }
+
+    const removeAccountByHandle = (handle: string) => {
+        const index = accounts.value.findIndex(account => account.handle === handle)
+
+        if (index > -1) {
+            accounts.value.splice(index, 1)
+        }
+    }
+
+    const getAccountById = computed(() => {
+        return (id) => {
+            return accounts.value.find(account => account.id === id)
+        }
+    })
+
+    const getAccountByHandle = computed(() => {
+        return (handle) => {
+            return accounts.value.find(account => account.handle === handle)
+        }
+    })
 
     const getSessionById = computed(() => {
         return (id) => {
@@ -25,9 +74,25 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
     })
 
     const getSessionByAccountHandle = computed(() => {
-        return (accountHandle) => {
+        return (accountHandle: string) => {
             return sessions.value.filter(session => {
                 return session.roles.some(role => role.account === accountHandle)
+            })
+        }
+    })
+
+    const getGuideSessionByAccountHandle = computed(() => {
+        return (accountHandle: string) => {
+            return sessions.value.filter(session => {
+                return session.roles.some(role => role.accountRole_id === 'guide' && role.account === accountHandle)
+            })
+        }
+    })
+
+    const getRecruitSessionByAccountHandle = computed(() => {
+        return (accountHandle: string) => {
+            return sessions.value.filter(session => {
+                return session.roles.some(role => role.accountRole_id === 'recruit' && role.account === accountHandle)
             })
         }
     })
@@ -57,8 +122,22 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             completed
         })
 
+        session.roles.forEach(role => {
+            createAccount(role.account)
+        })
+
         return true
     }
 
-    return { sessions, addSession, getSessionById, getSessionByAccountHandle }
+    return {
+        accounts,
+        sessions,
+        addSession,
+        getAccountById,
+        getAccountByHandle,
+        getSessionById,
+        getSessionByAccountHandle,
+        getGuideSessionByAccountHandle,
+        getRecruitSessionByAccountHandle,
+    }
 })

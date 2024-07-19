@@ -7,6 +7,22 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  showGuide: {
+    type: Boolean,
+    default: true,
+  },
+  showRecruit: {
+    type: Boolean,
+    default: true,
+  },
+  linkGuideAccount: {
+    type: Boolean,
+    default: true,
+  },
+  linkRecruitAccount: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const sessions = computed(() => {
@@ -28,8 +44,8 @@ const sessions = computed(() => {
         <th>Start</th>
         <th>End</th>
         <th>Duration</th>
-        <th>Guide</th>
-        <th>Recruit</th>
+        <th v-if="props.showGuide">Guide</th>
+        <th v-if="props.showRecruit">Recruit</th>
         <th>Guiding Categories</th>
         <th>
         </th>
@@ -40,8 +56,14 @@ const sessions = computed(() => {
         <td>{{ session.fromDate }}</td>
         <td>{{ session.toDate }}</td>
         <td>{{ session.duration }}</td>
-        <td>{{ session.roles?.find(role => role.accountRole_id === 'guide')?.account }}</td>
-        <td>{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</td>
+        <td v-if="props.showGuide">
+          <router-link v-if="props.linkGuideAccount" :to="`/account/${session.roles?.find(role => role.accountRole_id === 'guide')?.account}`">{{ session.roles?.find(role => role.accountRole_id === 'guide')?.account }}</router-link>
+          <span v-else>{{ session.roles?.find(role => role.accountRole_id === 'guide')?.account }}</span>
+        </td>
+        <td v-if="props.showRecruit">
+          <router-link v-if="props.linkRecruitAccount" :to="`/account/${session.roles?.find(role => role.accountRole_id === 'recruit')?.account}`">{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</router-link>
+          <span v-else>{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</span>
+        </td>
         <td>{{ session.guidingCategory_ids?.join(', ') }}</td>
         <td></td>
       </tr>
