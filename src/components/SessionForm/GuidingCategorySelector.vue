@@ -1,5 +1,4 @@
 <script setup>
-import { defineModel } from 'vue'
 import foundationData from '@/assets/foundationData.js'
 
 const { guidingCategories } = foundationData
