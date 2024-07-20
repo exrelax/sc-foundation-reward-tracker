@@ -6,10 +6,10 @@ import { type GuidingSessionRole, type GuidingSession } from '@/models/guidingSe
 
 interface SessionTableProps {
   sessions: GuidingSession[]
-  showGuide: boolean
-  showRecruit: boolean
-  linkGuideAccount: boolean
-  linkRecruitAccount: boolean
+  showGuide?: boolean
+  showRecruit?: boolean
+  linkGuideAccount?: boolean
+  linkRecruitAccount?: boolean
 }
 
 const props = withDefaults(defineProps<SessionTableProps>(), {
