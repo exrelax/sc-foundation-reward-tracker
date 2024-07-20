@@ -1,5 +1,6 @@
 <script setup>
 import foundationData from '@/assets/foundationData.js'
+import SvgIcon from '@/components/helpers/SvgIcon.vue'
 
 const { guidingCategories } = foundationData
 
@@ -23,8 +24,8 @@ const localModelValue = defineModel()
             autocomplete="off"
         />
         <label class="btn btn-primary" :for="category.id">
+          <SvgIcon :name="`rsi/guiding-${category.id}`" />
           {{ category.name }}
-          <span class="badge text-bg-secondary" title="completed">4</span>
         </label>
       </li>
     </ul>

@@ -24,4 +24,7 @@
   @each $name, $value in $spacing-grid {
     --spacing-grid-#{$name}: #{$value};
   }
+
+  --icon-width-px: var(--spacing-grid-30-px);
+  --icon-height-px: var(--spacing-grid-30-px);
 }

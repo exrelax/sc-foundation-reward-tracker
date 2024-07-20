@@ -1,0 +1,57 @@
+[
+  {
+    "title": "Fa",
+    "path": "fa",
+    "items": [
+      "far-award",
+      "far-baby",
+      "far-gear",
+      "far-graduation-cap",
+      "far-moon",
+      "far-pen-to-square",
+      "far-sun",
+      "far-trash-can",
+      "fas-award",
+      "fas-baby",
+      "fas-gear",
+      "fas-graduation-cap",
+      "fas-moon",
+      "fas-pen-to-square",
+      "fas-sun",
+      "fas-trash-can"
+    ]
+  },
+  {
+    "title": "Material",
+    "path": "material",
+    "items": [
+      "child-care",
+      "child-friendly",
+      "dark-mode",
+      "delete",
+      "edit",
+      "light-mode",
+      "school",
+      "settings"
+    ]
+  },
+  {
+    "title": "Rsi",
+    "path": "rsi",
+    "items": [
+      "guiding-beginner-basics",
+      "guiding-fps-combat",
+      "guiding-medical",
+      "guiding-mining",
+      "guiding-misc",
+      "guiding-missions-reputation",
+      "guiding-racing",
+      "guiding-refresher-basics",
+      "guiding-refueling",
+      "guiding-salvaging",
+      "guiding-touring",
+      "guiding-trading",
+      "guiding-vehicle-combat"
+    ]
+  }
+]

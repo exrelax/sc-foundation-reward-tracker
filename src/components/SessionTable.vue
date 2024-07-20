@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import dayjs from 'dayjs'
+import SvgIcon from "@/components/helpers/SvgIcon.vue";
 
 const props = defineProps({
   sessions: {
@@ -38,7 +39,7 @@ const sessions = computed(() => {
 </script>
 
 <template>
-  <table class="table mt-3">
+  <table class="session-table table mt-3">
     <thead>
       <tr>
         <th>Start</th>
@@ -65,8 +66,14 @@ const sessions = computed(() => {
           <span v-else>{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</span>
         </td>
         <td>{{ session.guidingCategory_ids?.join(', ') }}</td>
-        <td></td>
+        <td>
+          <SvgIcon name="material/edit" />
+          <SvgIcon name="material/delete" />
+        </td>
       </tr>
     </tbody>
   </table>
 </template>
+
+<style lang="scss">
+</style>
