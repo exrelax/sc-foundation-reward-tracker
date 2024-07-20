@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useGuidingSessionsStore } from '@/stores/guidingSessions.ts'
-import SessionTable from '@/components/SessionTable.vue'
+import SessionTable from '@/components/modules/SessionTable.vue'
 
 const route = useRoute()
 const guidingSessionsStore = useGuidingSessionsStore()

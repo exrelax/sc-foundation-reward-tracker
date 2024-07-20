@@ -21,8 +21,16 @@
     --line-height-#{$name}: #{$value};
   }
 
+  @each $name, $value in $padding {
+    --padding-#{$name}: #{$value};
+  }
+
   @each $name, $value in $spacing-grid {
     --spacing-grid-#{$name}: #{$value};
+  }
+
+  @each $name, $value in $transition {
+    --transition-#{$name}: #{$value};
   }
 
   --icon-width-px: var(--spacing-grid-30-px);

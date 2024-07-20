@@ -2,9 +2,8 @@
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useGuidingSessionsStore } from '@/stores/guidingSessions.ts'
-import SessionForm from '@/components/SessionForm/SessionForm.vue'
-import SessionTable from '@/components/SessionTable.vue'
-import SvgIcon from '@/components/helpers/SvgIcon.vue'
+import SessionForm from '@/components/modules/SessionForm/SessionForm.vue'
+import SessionTable from '@/components/modules/SessionTable.vue'
 
 const guidingSessionsStore = useGuidingSessionsStore()
 const { sessions } = storeToRefs(guidingSessionsStore)

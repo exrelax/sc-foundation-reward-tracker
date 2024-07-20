@@ -7,44 +7,92 @@ $font-serif: 'PT Serif', georgia, 'Times New Roman', times, serif;
 $font-monospace: consolas, 'Lucida Console', 'Andale Mono', 'Bitstream Vera Sans Mono', 'Courier New', courier;
 $font-special-chars: 'Helvetica Neue', helvetica, arial, verdana, sans-serif;
 
-$browser-font-size: 16;
-$body-font-size: 16;
-$std-line-height: 24;
+$font-size-browser: 16;
+$font-size-body: 16;
+$line-height-std: 24;
 
 $font-size: (
-        h1: 48,
-        h2: 36,
-        h3: 21,
-        h4: 21,
-        h5: 18,
-        h6: 15,
-        text-big: 18,
-        text-small: 14,
-        footer: 14,
+        10: 8,
+        20: 12,
+        30: 14,
+        40: 16,
+        50: 18,
+        60: 20,
+        70: 22,
+        80: 24,
+        90: 28,
+        100: 32,
+        110: 36,
+        120: 40,
+        130: 48,
 );
 
-$line-height: (
-        h1: 52,
-        h2: 39,
-        h3: 30,
-        h4: 30,
-        h5: 28,
-        h6: 24,
-        text-big: 24,
-        text-small: 24,
-        footer: 24,
+$font-size-mapping: (
+        body: 40,
+        h1: 130,
+        h2: 110,
+        h3: 70,
+        h4: 70,
+        h5: 50,
+        h6: 30,
+        text-big: 50,
+        text-small: 30,
+        footer: 30,
 );
 
 @each $name, $value in $font-size {
   $font-size: map.set($font-size, '#{$name}-px', $value * 1px);
-  $font-size: map.set($font-size, '#{$name}-rem', math.div($value, $body-font-size) * 1rem);
-  $font-size: map.set($font-size, '#{$name}-em', math.div($value, $body-font-size) * 1em);
-  $font-size: map.set($font-size, '#{$name}-percent', math.div($value, $body-font-size) * 100%);
+  $font-size: map.set($font-size, '#{$name}-em', math.div($value, $font-size-body) * 1em);
+  $font-size: map.set($font-size, '#{$name}-rem', math.div($value, $font-size-body) * 1rem);
+  $font-size: map.set($font-size, '#{$name}-percent', math.div($value, $font-size-body) * 100%);
 }
+
+@each $name, $value in $font-size-mapping {
+  $temp-value: map.get($font-size, $value);
+  $font-size: map.set($font-size, '#{$name}', $temp-value);
+  $font-size: map.set($font-size, '#{$name}-px', $temp-value * 1px);
+  $font-size: map.set($font-size, '#{$name}-em', math.div($temp-value, $font-size-body) * 1rem);
+  $font-size: map.set($font-size, '#{$name}-rem', math.div($temp-value, $font-size-body) * 1rem);
+  $font-size: map.set($font-size, '#{$name}-percent', math.div($temp-value, $font-size-body) * 100%);
+}
+
+$line-height: (
+        10: 12,
+        20: 18,
+        30: 22,
+        40: 24,
+        50: 28,
+        60: 30,
+        70: 38,
+        80: 42,
+        90: 52,
+);
+
+$line-height-mapping: (
+        body: 40,
+        h1: 90,
+        h2: 70,
+        h3: 60,
+        h4: 60,
+        h5: 50,
+        h6: 40,
+        text-big: 40,
+        text-small: 40,
+        footer: 40,
+);
 
 @each $name, $value in $line-height {
   $line-height: map.set($line-height, '#{$name}-px', $value * 1px);
-  $line-height: map.set($line-height, '#{$name}-rem', math.div($value, $body-font-size) * 1rem);
-  $line-height: map.set($line-height, '#{$name}-em', math.div($value, $body-font-size) * 1em);
-  $line-height: map.set($line-height, '#{$name}-scale', math.div($value, $body-font-size));
+  $line-height: map.set($line-height, '#{$name}-em', math.div($value, $font-size-body) * 1em);
+  $line-height: map.set($line-height, '#{$name}-rem', math.div($value, $font-size-body) * 1rem);
+  $line-height: map.set($line-height, '#{$name}-scale', math.div($value, $font-size-body));
+}
+
+@each $name, $value in $line-height-mapping {
+  $temp-value: map.get($line-height, $value);
+  $line-height: map.set($line-height, '#{$name}', $temp-value);
+  $line-height: map.set($line-height, '#{$name}-px', $temp-value * 1px);
+  $line-height: map.set($line-height, '#{$name}-em', math.div($temp-value, $font-size-body) * 1rem);
+  $line-height: map.set($line-height, '#{$name}-rem', math.div($temp-value, $font-size-body) * 1rem);
+  $line-height: map.set($line-height, '#{$name}-scale', math.div($temp-value, $font-size-body));
 }

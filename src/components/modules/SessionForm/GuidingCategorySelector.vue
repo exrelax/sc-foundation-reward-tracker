@@ -1,6 +1,7 @@
 <script setup>
 import foundationData from '@/assets/foundationData.js'
 import SvgIcon from '@/components/helpers/SvgIcon.vue'
+import GuidingCategoryCard from '@/components/elements/GuidingCategoryCard.vue'
 
 const { guidingCategories } = foundationData
 
@@ -15,18 +16,7 @@ const localModelValue = defineModel()
           :key="index"
           class="session-from-guiding-categories__list-item"
       >
-        <input
-            type="checkbox"
-            class="btn-check"
-            :value="category.id"
-            :id="category.id"
-            v-model="localModelValue"
-            autocomplete="off"
-        />
-        <label class="btn btn-primary" :for="category.id">
-          <SvgIcon :name="`rsi/guiding-${category.id}`" />
-          {{ category.name }}
-        </label>
+        <GuidingCategoryCard :id="category.id" v-model="localModelValue" />
       </li>
     </ul>
   </div>

@@ -1,0 +1,7 @@
+@use 'sass:map';
+
+$transition: (
+        duration: .2s,
+        timing-function: ease-in-out,
+        property: all,
+);

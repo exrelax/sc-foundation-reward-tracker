@@ -25,6 +25,43 @@ $grid-gutter-width: 32px;
 $page-wrapper-width: 2880px;
 $page-content-width: 1600px;
 
+$padding: (
+        5: 5,
+        10: 10,
+        20: 15,
+        30: 20,
+        40: 25,
+        50: 30,
+        60: 40,
+        70: 50,
+        80: 60,
+        90: 80,
+        100: 100,
+);
+
+$padding-size-mapping: (
+        sm: 10,
+        md: 30,
+        lg: 40,
+        xl: 50,
+        xxl: 60,
+        xxxl: 80,
+);
+
+@each $name, $value in $padding {
+  $padding: map.set($padding, '#{$name}-px', $value * 1px);
+  $padding: map.set($padding, '#{$name}-rem', math.div($value, $font-size-body) * 1rem);
+  $padding: map.set($padding, '#{$name}-percent', math.div($value, $font-size-body) * 100%);
+}
+
+@each $name, $value in $padding-size-mapping {
+  $temp-value: map.get($padding, $value);
+  $padding: map.set($padding, '#{$name}', $temp-value);
+  $padding: map.set($padding, '#{$name}-px', $temp-value * 1px);
+  $padding: map.set($padding, '#{$name}-rem', math.div($temp-value, $font-size-body) * 1rem);
+  $padding: map.set($padding, '#{$name}-percent', math.div($temp-value, $font-size-body) * 100%);
+}
+
 // SPACING GRID
 $spacing-grid: (
         5: 4,
@@ -52,15 +89,15 @@ $spacing-grid-size-mapping: (
 
 @each $name, $value in $spacing-grid {
   $spacing-grid: map.set($spacing-grid, '#{$name}-px', $value * 1px);
-  $spacing-grid: map.set($spacing-grid, '#{$name}-rem', math.div($value, $body-font-size) * 1rem);
-  $spacing-grid: map.set($spacing-grid, '#{$name}-percent', math.div($value, $body-font-size) * 100%);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-rem', math.div($value, $font-size-body) * 1rem);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-percent', math.div($value, $font-size-body) * 100%);
 }
 
 @each $name, $value in $spacing-grid-size-mapping {
   $temp-value: map.get($spacing-grid, $value);
   $spacing-grid: map.set($spacing-grid, '#{$name}', $temp-value);
   $spacing-grid: map.set($spacing-grid, '#{$name}-px', $temp-value * 1px);
-  $spacing-grid: map.set($spacing-grid, '#{$name}-rem', math.div($temp-value, $body-font-size) * 1rem);
-  $spacing-grid: map.set($spacing-grid, '#{$name}-percent', math.div($temp-value, $body-font-size) * 100%);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-rem', math.div($temp-value, $font-size-body) * 1rem);
+  $spacing-grid: map.set($spacing-grid, '#{$name}-percent', math.div($temp-value, $font-size-body) * 100%);
 }
 
