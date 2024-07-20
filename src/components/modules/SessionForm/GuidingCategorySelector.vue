@@ -1,6 +1,5 @@
-<script setup>
-import foundationData from '@/assets/foundationData.js'
-import SvgIcon from '@/components/helpers/SvgIcon.vue'
+<script lang="ts" setup>
+import foundationData from '@/assets/foundationData'
 import GuidingCategoryCard from '@/components/elements/GuidingCategoryCard.vue'
 
 const { guidingCategories } = foundationData

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import foundationData from '@/assets/foundationData.js'
+import foundationData from '@/assets/foundationData'
 import SvgIcon from '@/components/helpers/SvgIcon.vue'
 
 const { guidingCategories } = foundationData
@@ -30,7 +30,7 @@ const containerCssClassNames = computed(() => {
   }
 })
 
-const category = ref(guidingCategories.find((category) => category.id === props.id))
+const category = ref(guidingCategories.find((category: any) => category.id === props.id))
 </script>
 
 <template>

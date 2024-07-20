@@ -1,29 +1,22 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import dayjs from 'dayjs'
-import SvgIcon from "@/components/helpers/SvgIcon.vue";
+import SvgIcon from '@/components/helpers/SvgIcon.vue'
+import { type GuidingSessionRole, type GuidingSession } from '@/models/guidingSession.model'
 
-const props = defineProps({
-  sessions: {
-    type: Array,
-    required: true,
-  },
-  showGuide: {
-    type: Boolean,
-    default: true,
-  },
-  showRecruit: {
-    type: Boolean,
-    default: true,
-  },
-  linkGuideAccount: {
-    type: Boolean,
-    default: true,
-  },
-  linkRecruitAccount: {
-    type: Boolean,
-    default: true,
-  },
+interface SessionTableProps {
+  sessions: GuidingSession[]
+  showGuide: boolean
+  showRecruit: boolean
+  linkGuideAccount: boolean
+  linkRecruitAccount: boolean
+}
+
+const props = withDefaults(defineProps<SessionTableProps>(), {
+  showGuide: true,
+  showRecruit: true,
+  linkGuideAccount: true,
+  linkRecruitAccount: true,
 })
 
 const sessions = computed(() => {
@@ -58,12 +51,12 @@ const sessions = computed(() => {
         <td>{{ session.toDate }}</td>
         <td>{{ session.duration }}</td>
         <td v-if="props.showGuide">
-          <router-link v-if="props.linkGuideAccount" :to="`/account/${session.roles?.find(role => role.accountRole_id === 'guide')?.account}`">{{ session.roles?.find(role => role.accountRole_id === 'guide')?.account }}</router-link>
-          <span v-else>{{ session.roles?.find(role => role.accountRole_id === 'guide')?.account }}</span>
+          <router-link v-if="props.linkGuideAccount" :to="`/account/${session.roles?.find((role: GuidingSessionRole) => role.accountRole_id === 'guide')?.account}`">{{ session.roles?.find(role => role.accountRole_id === 'guide')?.account }}</router-link>
+          <span v-else>{{ session.roles?.find((role: GuidingSessionRole) => role.accountRole_id === 'guide')?.account }}</span>
         </td>
         <td v-if="props.showRecruit">
-          <router-link v-if="props.linkRecruitAccount" :to="`/account/${session.roles?.find(role => role.accountRole_id === 'recruit')?.account}`">{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</router-link>
-          <span v-else>{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</span>
+          <router-link v-if="props.linkRecruitAccount" :to="`/account/${session.roles?.find((role: GuidingSessionRole) => role.accountRole_id === 'recruit')?.account}`">{{ session.roles?.find(role => role.accountRole_id === 'recruit')?.account }}</router-link>
+          <span v-else>{{ session.roles?.find((role: GuidingSessionRole) => role.accountRole_id === 'recruit')?.account }}</span>
         </td>
         <td>{{ session.guidingCategory_ids?.join(', ') }}</td>
         <td>

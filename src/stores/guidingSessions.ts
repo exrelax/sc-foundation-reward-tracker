@@ -1,7 +1,11 @@
-import {ref, computed} from 'vue'
-import {defineStore} from 'pinia'
-import {v4 as uuidv4} from 'uuid'
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
+import {
+    type GuidingSessionPayload,
+    type GuidingSession
+} from '@/models/guidingSession.model'
 
 interface Account {
     id: string;
@@ -9,21 +13,9 @@ interface Account {
     monitored?: boolean;
 }
 
-interface GuidingSession {
-    id: string;
-    roles: {
-        account: string;
-        accountRole_id: string;
-    }[];
-    guidingCategory_ids: string[];
-    completed: boolean;
-    fromDate: Date;
-    toDate?: Date;
-}
-
 export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
-        const accounts = ref([])
-        const sessions = ref([])
+        const accounts = ref([] as Account[])
+        const sessions = ref([] as GuidingSession[])
 
         const createAccount = (handle: string, monitored: boolean = true) => {
             const account = getAccountByHandle.value(handle)
@@ -56,19 +48,19 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
         }
 
         const getAccountById = computed(() => {
-            return (id) => {
+            return (id: string) => {
                 return accounts.value.find(account => account.id === id)
             }
         })
 
         const getAccountByHandle = computed(() => {
-            return (handle) => {
-                return accounts.value.find(account => account.handle === handle)
+            return (accountHandle: string) => {
+                return accounts.value.find(account => account.handle === accountHandle)
             }
         })
 
         const getSessionById = computed(() => {
-            return (id) => {
+            return (id: string) => {
                 return sessions.value.find(session => session.id === id)
             }
         })
@@ -101,14 +93,14 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             return roles.length >= 2 && roles.every(role => role.account && role.accountRole_id)
         }
 
-        const sessionIsValid = (session: GuidingSession) => {
+        const sessionPayloadIdIsValid = (session: GuidingSessionPayload) => {
             return sessionRolesIsValid(session.roles) &&
                 session.guidingCategory_ids.length > 0 &&
                 session.fromDate != null
         }
 
-        const addSession = (session: GuidingSession) => {
-            if (!sessionIsValid(session)) {
+        const addSession = (session: GuidingSessionPayload) => {
+            if (!sessionPayloadIdIsValid(session)) {
                 return false
             }
 

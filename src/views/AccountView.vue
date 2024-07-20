@@ -1,8 +1,7 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useGuidingSessionsStore } from '@/stores/guidingSessions.ts'
+import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import SessionTable from '@/components/modules/SessionTable.vue'
 
 const route = useRoute()
@@ -10,10 +9,10 @@ const guidingSessionsStore = useGuidingSessionsStore()
 const { getAccountByHandle, getSessionByAccountHandle, getGuideSessionByAccountHandle, getRecruitSessionByAccountHandle } = guidingSessionsStore
 
 const account = computed(() => {
-  const foundAccount = getAccountByHandle(route.params.handle)
-  const sessions = getSessionByAccountHandle(route.params.handle)
-  const guideSessions = getGuideSessionByAccountHandle(route.params.handle)
-  const recruitSessions = getRecruitSessionByAccountHandle(route.params.handle)
+  const foundAccount = getAccountByHandle(route.params.handle as string)
+  const sessions = getSessionByAccountHandle(route.params.handle as string)
+  const guideSessions = getGuideSessionByAccountHandle(route.params.handle as string)
+  const recruitSessions = getRecruitSessionByAccountHandle(route.params.handle as string)
 
   return {
     ...foundAccount,

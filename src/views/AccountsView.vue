@@ -1,7 +1,7 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useGuidingSessionsStore } from '@/stores/guidingSessions.ts'
+import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import {RouterLink} from "vue-router";
 
 const guidingSessionsStore = useGuidingSessionsStore()

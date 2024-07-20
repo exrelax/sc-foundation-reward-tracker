@@ -397,4 +397,4 @@ export default {
       sessions: 3,
     },
   ],
-};
+} as any;

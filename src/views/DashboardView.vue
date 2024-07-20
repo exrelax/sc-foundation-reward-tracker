@@ -1,7 +1,7 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useGuidingSessionsStore } from '@/stores/guidingSessions.ts'
+import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import SessionForm from '@/components/modules/SessionForm/SessionForm.vue'
 import SessionTable from '@/components/modules/SessionTable.vue'
 

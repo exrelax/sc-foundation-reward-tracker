@@ -1,20 +1,23 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 
-export interface Toast {
-    id: string;
-    date: Date;
+export interface ToastPayload {
     title: string;
     message: string;
     type: 'success' | 'error' | 'warning';
 }
 
+export interface Toast extends ToastPayload {
+    id: string;
+    date: Dayjs;
+}
+
 let timeout = null
 
 export const useToastsStore = defineStore('toasts', () => {
-    const toasts = ref([])
+    const toasts = ref([] as Toast[])
     const limit = 5
     const toastsDurability = 20 * 1000
     const toastsCleanupTimer = 60 * 1000
@@ -60,17 +63,17 @@ export const useToastsStore = defineStore('toasts', () => {
 
     const _getActiveToasts = () => {
         const now = dayjs()
-        const reversedToasts = toasts.value.toReversed()
+        const reversedToasts: Toast[] = toasts.value.slice().reverse()
 
         return reversedToasts
-            .filter(toast =>  now.diff(toast.date, 'millisecond') < toastsDurability)
-            .filter((toast, index) => index < limit)
+            .filter((toast: Toast) =>  now.diff(toast.date, 'millisecond') < toastsDurability)
+            .filter((toast: Toast, index) => index < limit)
     }
 
     const _cleanupToasts = () => {
         const now = dayjs()
 
-        toasts.value = toasts.value.reduce((accumulator, toast) => {
+        toasts.value = toasts.value.reduce((accumulator: Toast[], toast: Toast) => {
             if (now.diff(toast.date, 'millisecond') < toastsCleanupTimer) {
                 accumulator.push(toast)
             }
@@ -90,7 +93,7 @@ export const useToastsStore = defineStore('toasts', () => {
     })
 
     const getToastWithAgeValues = computed(() => {
-        return (toast) => {
+        return (toast: Toast) => {
             return _getToastWithAgeValues(toast)
         }
     })
@@ -103,14 +106,14 @@ export const useToastsStore = defineStore('toasts', () => {
         }
     })
 
-    const toastIsValid = (toast: Toast) => {
+    const toastPayloadIsValid = (toast: ToastPayload) => {
         return toast.title != null && toast.message != null && toast.type != null
     }
 
-    const addToast = (toast: Toast) => {
+    const addToast = (toast: ToastPayload) => {
         _cleanupToasts()
 
-        if (!toastIsValid(toast)) {
+        if (!toastPayloadIsValid(toast)) {
             return false
         }
 

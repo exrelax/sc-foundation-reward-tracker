@@ -1,24 +1,12 @@
-<script setup>
-import { ref,  computed, watch, toRef, onMounted, onUnmounted } from 'vue'
+<script lang="ts" setup>
+import { ref,  computed, watch, onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import dayjs from 'dayjs'
-import { useToastsStore } from '@/stores/toasts.ts'
+import { useToastsStore } from '@/stores/toasts'
 
-let interval = null
+let interval: any = null
 const toastsStore = useToastsStore()
 const { activeToasts } = storeToRefs(toastsStore)
-const { getToastWithAgeValues, getToastsWithAgeValues } = toastsStore
-
-const getAgeValues = (toast) => {
-  const ageValues = getToastWithAgeValues(toast)
-
-  console.log(ageValues.ageString, ageValues.ageInSeconds)
-
-  return {
-    ...toast,
-    ...ageValues,
-  }
-}
+const { getToastsWithAgeValues } = toastsStore
 
 const toastAgeValues = ref(getToastsWithAgeValues())
 
@@ -30,7 +18,7 @@ const localToasts = computed(() => {
   return activeToasts.value
 })
 
-const close = id => {
+const close = (id: string) => {
   toastsStore.removeToast(id)
 }
 

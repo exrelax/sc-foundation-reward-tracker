@@ -1,8 +1,9 @@
-<script setup>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import dayjs from 'dayjs'
-import { useGuidingSessionsStore } from '@/stores/guidingSessions.ts'
-import { useToastsStore } from '@/stores/toasts.ts'
+import { type GuidingSessionRole, type GuidingSessionPayload } from '@/models/guidingSession.model'
+import { useGuidingSessionsStore } from '@/stores/guidingSessions'
+import { useToastsStore } from '@/stores/toasts'
 import GuidingCategorySelector from './GuidingCategorySelector.vue'
 
 const guidingSessionsStore = useGuidingSessionsStore()
@@ -21,16 +22,16 @@ const submit = () => {
   const roles = [
     { account: guideAccountHandle.value, accountRole_id: 'guide' },
     { account: recruitAccountHandle.value, accountRole_id: 'recruit' },
-  ]
+  ] as GuidingSessionRole[]
 
   const startDateTimeDjs = dayjs(startDateTime.value)
   const endDateTimeDjs = dayjs(endDateTime.value)
   const payload = {
     fromDate: startDateTimeDjs.toDate(),
-    toDate: endDateTimeDjs.toDate(),
+    toDate: endDateTimeDjs?.toDate() ?? null,
     roles,
     guidingCategory_ids: selectedGuideCategories.value,
-  }
+  } as GuidingSessionPayload
 
   const result = guidingSessionsStore.addSession(payload)
 
