@@ -33,13 +33,6 @@ const localModelValue = defineModel()
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
-
-.session-from-guiding-categories__list-item {
-  margin: 0 0 0.5em 0.5em;
-
-  &:first-child {
-    margin-left: 0;
-  }
+  gap: .5em;
 }
 </style>

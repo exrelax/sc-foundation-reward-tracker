@@ -115,10 +115,5 @@ const clearForm = () => {
 <style lang="scss">
 .session-form-container {
   padding: 20px;
-  border: 1px solid #efefef;
-  border-radius: 5px;
-  box-shadow:
-      0 0 0 1px rgba(255 255 200 / 90%),
-      2px 2px 6px rgb(0 0 0 / 60%);
 }
 </style>
