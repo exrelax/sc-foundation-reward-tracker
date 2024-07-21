@@ -29,10 +29,13 @@
       "child-friendly",
       "dark-mode",
       "delete",
+      "download",
       "edit",
       "light-mode",
+      "save",
       "school",
-      "settings"
+      "settings",
+      "upload"
     ]
   },
   {

@@ -14,7 +14,7 @@ const {
   getRewardsForAccount,
 } = guidingSessionsStore
 
-const accountHandle = computed(() => route.params.handle)
+const accountHandle = computed(() => route.params.handle as string)
 
 const account = computed(() => {
   const foundAccount = getAccountByHandle(accountHandle.value)
@@ -31,13 +31,13 @@ const account = computed(() => {
 })
 
 const completedRewards = computed(() => {
-  const rewards = getRewardsForAccount(account.value.handle)
+  const rewards = getRewardsForAccount(account.value.handle as string)
 
   return rewards.filter(reward => reward.completed)
 })
 
 const incompleteRewards = computed(() => {
-  const rewards = getRewardsForAccount(account.value.handle)
+  const rewards = getRewardsForAccount(account.value.handle as string)
 
   return rewards.filter(reward => !reward.completed)
 })

@@ -9,16 +9,41 @@ import {
 import { getRewards } from '@/utilities/rewards'
 
 interface Account {
-    id: string;
-    handle: string;
-    monitored?: boolean;
+    id: string
+    handle: string
+    favorite?: boolean
 }
 
-export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
+interface Meta {
+    id: string
+    createDate: Date
+    updateDate: Date
+}
+
+const storeName = 'guidingSessions'
+
+export const useGuidingSessionsStore = defineStore(storeName, () => {
         const accounts = ref([] as Account[])
         const sessions = ref([] as GuidingSession[])
+        const meta = ref({
+            id: (+new Date).toString(36),
+            createDate: dayjs().toDate(),
+            updateDate: dayjs().toDate(),
+        })
 
-        const createAccount = (handle: string, monitored: boolean = true) => {
+        const updateMeta = () => {
+            if (meta.value.id == null) {
+                meta.value.id = (+new Date).toString(36)
+            }
+
+            if (meta.value.createDate == null) {
+                meta.value.createDate = dayjs().toDate()
+            }
+
+            meta.value.updateDate = dayjs().toDate()
+        }
+
+        const createAccount = (handle: string, favorite: boolean = true) => {
             const account = getAccountByHandle.value(handle)
 
             if (account) {
@@ -28,24 +53,68 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             accounts.value.push({
                 id: uuidv4(),
                 handle,
-                monitored
+                favorite
             })
+
+            updateMeta()
         }
 
         const removeAccountById = (id: string) => {
             const index = accounts.value.findIndex(account => account.id === id)
 
-            if (index > -1) {
-                accounts.value.splice(index, 1)
+            if (index === -1) {
+                return
             }
+
+            accounts.value.splice(index, 1)
+            updateMeta()
         }
 
         const removeAccountByHandle = (handle: string) => {
             const index = accounts.value.findIndex(account => account.handle === handle)
 
-            if (index > -1) {
-                accounts.value.splice(index, 1)
+            if (index === -1) {
+                return
             }
+
+            accounts.value.splice(index, 1)
+            updateMeta()
+        }
+
+        const isValidAccount = (account: any) => {
+            return account != null &&
+                typeof account.id === 'string' &&
+                account.id.length > 0 &&
+                typeof account.handle === 'string' &&
+                account.handle.length > 0 &&
+                typeof account.favorite === 'boolean'
+        }
+
+        const isValidSession = (session: any) => {
+            return session != null &&
+                typeof session.id === 'string' &&
+                session.id.length > 0 &&
+                session.roles != null &&
+                Array.isArray(session.roles) &&
+                Array.isArray(session.guidingCategory_ids) &&
+                session.guidingCategory_ids.length > 0 &&
+                session.fromDate != null
+        }
+
+        const isValidAccounts = (accounts: Account[]) => {
+            return Array.isArray(accounts) &&
+                accounts.every(isValidAccount)
+        }
+
+        const isValidSessions = (sessions: GuidingSession[]) => {
+            return Array.isArray(sessions) &&
+                sessions.every(isValidSession)
+        }
+
+        const isValidImportMeta = (meta: any) => {
+            return typeof meta.id === 'string' &&
+                typeof meta.createDate === 'string' &&
+                typeof meta.updateDate === 'string'
         }
 
         const getAccountById = computed(() => {
@@ -176,6 +245,8 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
                 return false
             }
 
+            updateMeta()
+
             const fromDateDjs = dayjs(session.fromDate)
             const toDateDjs = session.toDate ? dayjs(session.toDate) : null
             const completed = session.toDate != null && fromDateDjs.isBefore(toDateDjs)
@@ -193,6 +264,45 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             return true
         }
 
+        const getStoreFromStorage = computed(() => {
+            return () => {
+                const store = localStorage.getItem(storeName)
+                return store ? JSON.parse(store) : null
+            }
+        })
+
+        const importFileDateToStore = (fileData: any) => {
+            const {
+                accounts: importAccounts,
+                sessions: importSessions,
+                meta: importMeta
+            } = fileData
+
+            console.log(
+                importAccounts,
+                isValidAccounts(importAccounts),
+                importSessions,
+                isValidSessions(importSessions),
+                importMeta,
+                isValidImportMeta(importMeta)
+            )
+
+            if (
+                !isValidAccounts(importAccounts) ||
+                !isValidSessions(importSessions) ||
+                !isValidImportMeta(importMeta)
+            ) {
+                return false
+            }
+
+            meta.value = importMeta
+            accounts.value = importAccounts
+            sessions.value = importSessions
+
+            restoreMetaDates()
+            restoreSessionDates()
+        }
+
         const restoreSessionDates = () => {
             sessions.value = sessions.value.map(session => {
                 const fromDate = new Date(session.fromDate)
@@ -206,10 +316,15 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             })
         }
 
+        const restoreMetaDates = () => {
+            meta.value.createDate = dayjs(meta.value.createDate).toDate()
+            meta.value.updateDate = dayjs(meta.value.updateDate).toDate()
+        }
+
         return {
             accounts,
             sessions,
-            addSession,
+            meta,
             getAccountById,
             getAccountByHandle,
             getSessionById,
@@ -217,15 +332,20 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             getGuideSessionsByAccountHandle,
             getRecruitSessionsByAccountHandle,
             getRewardsForAccount,
+            getStoreFromStorage,
+            addSession,
+            importFileDateToStore,
             restoreSessionDates,
+            restoreMetaDates,
         }
     },
     {
         persist: {
             storage: localStorage,
-            paths: [ 'accounts', 'sessions' ],
+            paths: [ 'accounts', 'sessions', 'meta' ],
             afterRestore: (ctx) => {
                 ctx.store.restoreSessionDates()
+                ctx.store.restoreMetaDates()
             }
         }
     }
