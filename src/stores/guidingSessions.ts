@@ -6,6 +6,7 @@ import {
     type GuidingSessionPayload,
     type GuidingSession
 } from '@/models/guidingSession.model'
+import { getRewards } from '@/utilities/rewards'
 
 interface Account {
     id: string;
@@ -65,15 +66,54 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             }
         })
 
-        const getSessionByAccountHandle = computed(() => {
-            return (accountHandle: string) => {
-                return sessions.value.filter(session => {
+        const getSessionsByAccountHandle = computed(() => {
+            return (accountHandle: string, givenSessions: GuidingSession[] = sessions.value) => {
+                return givenSessions.filter(session => {
                     return session.roles.some(role => role.account === accountHandle)
                 })
             }
         })
 
-        const getGuideSessionByAccountHandle = computed(() => {
+        const getSessionsByPeriod = computed(() => {
+            return (fromDate: Date, toDate: Date, givenSessions: GuidingSession[] = sessions.value) => {
+                return givenSessions.filter(session => {
+                    const fromDateDjs = dayjs(fromDate)
+                    const toDateDjs = dayjs(toDate)
+
+                    return fromDateDjs.isBefore(session.fromDate) &&
+                        (session.toDate == null || toDateDjs.isAfter(session.toDate))
+                })
+            }
+        })
+
+        const getSessionsByAccountRoleId = computed(() => {
+            return (accountHandle: string, accountRoleId?: string, givenSessions: GuidingSession[] = sessions.value) => {
+                return givenSessions.filter(session => {
+                    if (accountRoleId == null) {
+                        return getSessionsByAccountHandle.value(accountHandle)
+                    }
+
+                    return session.roles.some((role) =>
+                            role.accountRole_id === accountRoleId &&
+                            role.account === accountHandle
+                    )
+                })
+            }
+        })
+
+        const getSessionsByGuidingCategoryId = computed(() => {
+            return (guidingCategoryId?: string, givenSessions: GuidingSession[] = sessions.value) => {
+                if (guidingCategoryId == null) {
+                    return givenSessions
+                }
+
+                return givenSessions.filter(session => {
+                    return session.guidingCategory_ids.includes(guidingCategoryId)
+                })
+            }
+        })
+
+        const getGuideSessionsByAccountHandle = computed(() => {
             return (accountHandle: string) => {
                 return sessions.value.filter(session => {
                     return session.roles.some(role => role.accountRole_id === 'guide' && role.account === accountHandle)
@@ -81,10 +121,42 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             }
         })
 
-        const getRecruitSessionByAccountHandle = computed(() => {
+        const getRecruitSessionsByAccountHandle = computed(() => {
             return (accountHandle: string) => {
                 return sessions.value.filter(session => {
                     return session.roles.some(role => role.accountRole_id === 'recruit' && role.account === accountHandle)
+                })
+            }
+        })
+
+        const getRewardsForAccount = computed(() => {
+            return (accountHandle: string) => {
+                const rewards = getRewards()
+                return rewards.map((reward) => {
+                    const { condition } = reward
+                    const accountSessions = getSessionsByAccountHandle.value(accountHandle)
+
+                    const sessionsInPeriod = getSessionsByPeriod.value(
+                        condition.fromDate,
+                        condition.toDate,
+                        accountSessions,
+                    )
+
+                    const sessionsByAccountRoleId = getSessionsByAccountRoleId.value(
+                        accountHandle,
+                        condition.accountRole_id ?? void 0,
+                        sessionsInPeriod,
+                    )
+
+                    const sessionsByGuidingCategoryId = getSessionsByGuidingCategoryId.value(
+                        condition.guidingCategory_id ?? void 0,
+                        sessionsByAccountRoleId,
+                    )
+
+                    return {
+                        ...reward,
+                        completed: sessionsByGuidingCategoryId.length >= condition.sessions,
+                    }
                 })
             }
         })
@@ -141,9 +213,10 @@ export const useGuidingSessionsStore = defineStore('guidingSessions', () => {
             getAccountById,
             getAccountByHandle,
             getSessionById,
-            getSessionByAccountHandle,
-            getGuideSessionByAccountHandle,
-            getRecruitSessionByAccountHandle,
+            getSessionsByAccountHandle,
+            getGuideSessionsByAccountHandle,
+            getRecruitSessionsByAccountHandle,
+            getRewardsForAccount,
             restoreSessionDates,
         }
     },

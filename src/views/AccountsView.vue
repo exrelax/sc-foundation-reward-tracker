@@ -5,16 +5,16 @@ import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import {RouterLink} from "vue-router";
 
 const guidingSessionsStore = useGuidingSessionsStore()
-const { getSessionByAccountHandle, getGuideSessionByAccountHandle, getRecruitSessionByAccountHandle } = guidingSessionsStore
+const { getSessionsByAccountHandle, getGuideSessionsByAccountHandle, getRecruitSessionsByAccountHandle } = guidingSessionsStore
 const { accounts } = storeToRefs(guidingSessionsStore)
 
 const accountsSorted = computed(() => {
   return accounts.value.sort((a, b) => {
     return a.handle.localeCompare(b.handle)
   }).map(account => {
-    const sessions = getSessionByAccountHandle(account.handle)
-    const guideSessions = getGuideSessionByAccountHandle(account.handle)
-    const recruitSessions = getRecruitSessionByAccountHandle(account.handle)
+    const sessions = getSessionsByAccountHandle(account.handle)
+    const guideSessions = getGuideSessionsByAccountHandle(account.handle)
+    const recruitSessions = getRecruitSessionsByAccountHandle(account.handle)
 
     return {
       ...account,
