@@ -8,13 +8,13 @@ import {
 } from '@/models/guidingSession.model'
 import { getRewards } from '@/utilities/rewards'
 
-interface Account {
+export interface Account {
     id: string
     handle: string
     favorite?: boolean
 }
 
-interface Meta {
+export interface Meta {
     id: string
     createDate: Date
     updateDate: Date
@@ -29,7 +29,7 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             id: (+new Date).toString(36),
             createDate: dayjs().toDate(),
             updateDate: dayjs().toDate(),
-        })
+        } as Meta)
 
         const updateMeta = () => {
             if (meta.value.id == null) {
@@ -156,6 +156,18 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
         const getAccountByHandle = computed(() => {
             return (accountHandle: string) => {
                 return accounts.value.find(account => account.handle === accountHandle)
+            }
+        })
+
+        const getFavoriteAccounts = computed(() => {
+            return () => {
+                return accounts.value.filter(account => account.favorite)
+            }
+        })
+
+        const getNonFavoriteAccounts = computed(() => {
+            return () => {
+                return accounts.value.filter(account => !account.favorite)
             }
         })
 
@@ -330,6 +342,32 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             }
         })
 
+        const setAccountToFavorite = (accountHandle: string) => {
+            const account = getAccountByHandle.value(accountHandle)
+
+            if (!account) {
+                return false
+            }
+
+            account.favorite = true
+            updateMeta()
+
+            return true
+        }
+
+        const setAccountToNonFavorite = (accountHandle: string) => {
+            const account = getAccountByHandle.value(accountHandle)
+
+            if (!account) {
+                return false
+            }
+
+            account.favorite = false
+            updateMeta()
+
+            return true
+        }
+
         const importFileDateToStore = (fileData: any) => {
             const {
                 accounts: importAccounts,
@@ -386,6 +424,8 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             meta,
             getAccountById,
             getAccountByHandle,
+            getFavoriteAccounts,
+            getNonFavoriteAccounts,
             getSessionById,
             getSessionsByAccountHandle,
             getGuideSessionsByAccountHandle,
@@ -395,6 +435,8 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             addSession,
             updateSession,
             removeSessionById,
+            setAccountToFavorite,
+            setAccountToNonFavorite,
             importFileDateToStore,
             restoreSessionDates,
             restoreMetaDates,

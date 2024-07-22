@@ -3,26 +3,24 @@ import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import {RouterLink} from "vue-router";
+import AccountsTable from '@/components/modules/AccountsTable.vue'
 
 const guidingSessionsStore = useGuidingSessionsStore()
-const { getSessionsByAccountHandle, getGuideSessionsByAccountHandle, getRecruitSessionsByAccountHandle } = guidingSessionsStore
+const {
+  getFavoriteAccounts,
+  getNonFavoriteAccounts,
+  getSessionsByAccountHandle,
+  getGuideSessionsByAccountHandle,
+  getRecruitSessionsByAccountHandle
+} = guidingSessionsStore
 const { accounts } = storeToRefs(guidingSessionsStore)
 
-const accountsSorted = computed(() => {
-  return accounts.value.sort((a, b) => {
-    return a.handle.localeCompare(b.handle)
-  }).map(account => {
-    const sessions = getSessionsByAccountHandle(account.handle)
-    const guideSessions = getGuideSessionsByAccountHandle(account.handle)
-    const recruitSessions = getRecruitSessionsByAccountHandle(account.handle)
+const favoriteAccounts = computed(() => {
+  return getFavoriteAccounts()
+})
 
-    return {
-      ...account,
-      guideSessions,
-      recruitSessions,
-      sessions,
-    }
-  })
+const nonFavoriteAccounts = computed(() => {
+  return getNonFavoriteAccounts()
 })
 </script>
 
@@ -31,22 +29,19 @@ const accountsSorted = computed(() => {
     <h1>Accounts</h1>
   </div>
 
-  <table class="table mt-3">
-    <thead>
-      <tr>
-        <th>Account</th>
-        <th>Guide-Sessions</th>
-        <th>Recruit-Sessions</th>
-        <th>Sessions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(account, index) in accountsSorted" :key="`${account.id}-${index}`">
-        <td><RouterLink :to="`/account/${account.handle}`">{{ account.handle }}</RouterLink></td>
-        <td>{{ account.guideSessions.length }}</td>
-        <td>{{ account.recruitSessions.length }}</td>
-        <td>{{ account.sessions.length }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <article v-if="favoriteAccounts.length > 0">
+    <header>
+      <h2>Favorite Accounts</h2>
+    </header>
+
+    <AccountsTable selection="favorite"/>
+  </article>
+
+  <article v-if="nonFavoriteAccounts.length > 0">
+    <header>
+      <h2>Accounts</h2>
+    </header>
+
+    <AccountsTable selection="non-favorite"/>
+  </article>
 </template>

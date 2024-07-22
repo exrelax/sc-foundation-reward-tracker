@@ -25,6 +25,7 @@
     "title": "Material",
     "path": "material",
     "items": [
+      "check",
       "child-care",
       "child-friendly",
       "close",
@@ -32,11 +33,16 @@
       "delete",
       "download",
       "edit",
+      "favorite-fill",
+      "favorite",
       "light-mode",
       "save",
       "school",
       "settings",
-      "upload"
+      "star-fill",
+      "star",
+      "upload",
+      "verified"
     ]
   },
   {
