@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import dayjs from 'dayjs'
 import SvgIcon from '@/components/helpers/SvgIcon.vue'
 import { type GuidingSessionRole, type GuidingSession } from '@/models/guidingSession.model'
+import Modal from '@/components/modules/Modal.vue'
+import SessionForm from '@/components/modules/SessionForm/SessionForm.vue'
 
 interface SessionTableProps {
   sessions: GuidingSession[]
@@ -19,16 +21,27 @@ const props = withDefaults(defineProps<SessionTableProps>(), {
   linkRecruitAccount: true,
 })
 
+const dateFormatString = 'YYYY-MM-DDTHH:mm'
+
 const sessions = computed(() => {
   return props.sessions.map((session) => {
     return {
       ...session,
-      fromDate: dayjs(session.fromDate).format('YYYY-MM-DD HH:mm'),
-      toDate: dayjs(session.toDate).format('YYYY-MM-DD HH:mm'),
+      fromDate: dayjs(session.fromDate).format(dateFormatString),
+      toDate: dayjs(session.toDate).format(dateFormatString),
       duration: dayjs(session.toDate).diff(dayjs(session.fromDate), 'minute'),
+      session,
     }
   })
 })
+
+const sessionToEdit = ref(null as GuidingSession | null)
+const showEditModal = ref(false)
+
+const editEntry = (session: GuidingSession) => {
+  sessionToEdit.value = session
+  showEditModal.value = true
+}
 </script>
 
 <template>
@@ -60,12 +73,18 @@ const sessions = computed(() => {
         </td>
         <td>{{ session.guidingCategory_ids?.join(', ') }}</td>
         <td>
-          <SvgIcon name="material/edit" />
+          <button class="btn btn-outline-secondary" @click="editEntry(session.session)">
+            <SvgIcon name="material/edit" />
+          </button>
+
           <SvgIcon name="material/delete" />
         </td>
       </tr>
     </tbody>
   </table>
+  <Modal v-model="showEditModal">
+    <SessionForm v-if="showEditModal && sessionToEdit" :session="sessionToEdit" @close-modal="() => showEditModal = false" />
+  </Modal>
 </template>
 
 <style lang="scss">

@@ -1,24 +1,53 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import dayjs from 'dayjs'
-import { type GuidingSessionRole, type GuidingSessionPayload } from '@/models/guidingSession.model'
+import {type GuidingSessionRole, type GuidingSessionPayload, type GuidingSession} from '@/models/guidingSession.model'
 import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import { useToastsStore } from '@/stores/toasts'
 import GuidingCategorySelector from './GuidingCategorySelector.vue'
 
+interface SessionFormProps {
+  session?: GuidingSession
+}
+
+const props = defineProps<SessionFormProps>()
+const emit = defineEmits(['closeModal'])
+
 const guidingSessionsStore = useGuidingSessionsStore()
+const { addSession, updateSession, removeSessionById } = guidingSessionsStore
 const toastsStore = useToastsStore()
 
-const defaultStartDateTime = dayjs().format('YYYY-MM-DDTHH:mm')
+const updateLocalRefs = () => {
+  guideAccountHandle.value = props.session?.roles?.find(role => role.accountRole_id === 'guide')?.account ?? ''
+  recruitAccountHandle.value = props.session?.roles?.find(role => role.accountRole_id === 'recruit')?.account ?? ''
+  startDateTime.value = props.session?.fromDate ? dayjs(props.session.fromDate).format(dateFormatString) : defaultStartDateTime
+  endDateTime.value = props.session?.toDate ? dayjs(props.session.toDate).format(dateFormatString) : ''
+  selectedGuideCategories.value = props.session?.guidingCategory_ids ?? [] as string[]
+  sessionToUpdate.value = !!props.session
+}
+
+const sessionToUpdate = ref(false)
+const dateFormatString = 'YYYY-MM-DDTHH:mm'
+const defaultStartDateTime = dayjs().format(dateFormatString)
+
+const rolesTemplate = [
+  { account: '', accountRole_id: 'guide' },
+  { account: '', accountRole_id: 'recruit' },
+] as GuidingSessionRole[]
 
 const guideAccountHandle = ref('')
 const recruitAccountHandle = ref('')
 const startDateTime = ref(defaultStartDateTime)
-const endDateTime = ref('')
+const endDateTime = ref( '')
+const selectedGuideCategories = ref( [] as string[])
 
-const selectedGuideCategories = ref([])
+updateLocalRefs()
 
-const submit = () => {
+watch(props.session as any, () => {
+  updateLocalRefs()
+}, { deep: true })
+
+const createPayload = () : GuidingSessionPayload => {
   const roles = [
     { account: guideAccountHandle.value, accountRole_id: 'guide' },
     { account: recruitAccountHandle.value, accountRole_id: 'recruit' },
@@ -26,6 +55,7 @@ const submit = () => {
 
   const startDateTimeDjs = dayjs(startDateTime.value)
   const endDateTimeDjs = dayjs(endDateTime.value)
+
   const payload = {
     fromDate: startDateTimeDjs.toDate(),
     toDate: endDateTimeDjs?.toDate() ?? null,
@@ -33,11 +63,28 @@ const submit = () => {
     guidingCategory_ids: selectedGuideCategories.value,
   } as GuidingSessionPayload
 
-  const result = guidingSessionsStore.addSession(payload)
+  if (props.session?.id != null) {
+    payload.id = props.session.id
+  }
 
-  const toastTitle = result ? 'Session added' : 'Failed to add session'
-  const toastType = result ? 'success' : 'error'
-  const toastMessage = result ? 'Session added successfully' : 'Failed to add session'
+  return payload
+}
+
+const submit = () => {
+  let toastTitle, toastType, toastMessage
+
+  const payload = createPayload()
+  const result = sessionToUpdate.value ? updateSession(payload) : addSession(payload)
+
+  if (sessionToUpdate.value) {
+    toastTitle = result ? 'Session updated' : 'Failed to update session'
+    toastType = result ? 'success' : 'error'
+    toastMessage = result ? 'Session updated successfully' : 'Failed to update session'
+  } else {
+    toastTitle = result ? 'Session added' : 'Failed to add session'
+    toastType = result ? 'success' : 'error'
+    toastMessage = result ? 'Session added successfully' : 'Failed to add session'
+  }
 
   toastsStore.addToast({
     title: toastTitle,
@@ -47,8 +94,22 @@ const submit = () => {
 
   if (result) {
     clearForm()
+    emit('closeModal')
   }
-};
+}
+
+const remove = () => {
+  if (props.session?.id == null) {
+    return
+  }
+
+  const result = removeSessionById(props.session?.id)
+
+  if (result) {
+    clearForm()
+    emit('closeModal')
+  }
+}
 
 const clearForm = () => {
   guideAccountHandle.value = ''
@@ -106,7 +167,9 @@ const clearForm = () => {
 
         <GuidingCategorySelector class="mt-3" v-model="selectedGuideCategories" />
 
-        <button class="btn btn-primary" @click="submit">Add</button>
+        <button v-if="!sessionToUpdate" class="btn btn-primary" @click="submit">Add</button>
+        <button v-if="sessionToUpdate" class="btn btn-primary" @click="submit">Save</button>
+        <button v-if="sessionToUpdate" class="btn btn-primary" @click="remove">Delete</button>
       </fieldset>
     </form>
   </div>

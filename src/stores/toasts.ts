@@ -4,9 +4,9 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs, { Dayjs } from 'dayjs'
 
 export interface ToastPayload {
-    title: string;
-    message: string;
-    type: 'success' | 'error' | 'warning';
+    title: string
+    message: string
+    type: string
 }
 
 export interface Toast extends ToastPayload {

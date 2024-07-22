@@ -81,6 +81,19 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             updateMeta()
         }
 
+        const removeSessionById = (id: string) => {
+            const index = sessions.value.findIndex(session => session.id === id)
+
+            if (index === -1) {
+                return false
+            }
+
+            sessions.value.splice(index, 1)
+            updateMeta()
+
+            return true
+        }
+
         const isValidAccount = (account: any) => {
             return account != null &&
                 typeof account.id === 'string' &&
@@ -115,6 +128,13 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             return typeof meta.id === 'string' &&
                 typeof meta.createDate === 'string' &&
                 typeof meta.updateDate === 'string'
+        }
+
+        const isSessionCompleted = (session: GuidingSession | GuidingSessionPayload) => {
+            const fromDateDjs = dayjs(session.fromDate)
+            const toDateDjs = session.toDate ? dayjs(session.toDate) : null
+
+            return session.toDate != null && fromDateDjs.isBefore(toDateDjs)
         }
 
         const getAccountById = computed(() => {
@@ -245,11 +265,7 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
                 return false
             }
 
-            updateMeta()
-
-            const fromDateDjs = dayjs(session.fromDate)
-            const toDateDjs = session.toDate ? dayjs(session.toDate) : null
-            const completed = session.toDate != null && fromDateDjs.isBefore(toDateDjs)
+            const completed = isSessionCompleted(session)
 
             sessions.value.push({
                 ...session,
@@ -260,6 +276,35 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             session.roles.forEach(role => {
                 createAccount(role.account)
             })
+            updateMeta()
+
+            return true
+        }
+
+        const updateSession = (session: GuidingSessionPayload) => {
+            if (!sessionPayloadIdIsValid(session) ||
+                session.id == null ||
+                getSessionById.value(session.id) == null) {
+                return false
+            }
+
+            const { id } = session
+            const foundSession = getSessionById.value(session.id)
+            const index = sessions.value.findIndex(session => session.id === id)
+            const completed = isSessionCompleted(session)
+
+            if (index === -1) {
+                return false
+            }
+
+            const updatedSession = {
+                ...foundSession,
+                ...session,
+                completed
+            } as GuidingSession
+
+            sessions.value.splice(index, 1, updatedSession)
+            updateMeta()
 
             return true
         }
@@ -334,6 +379,8 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             getRewardsForAccount,
             getStoreFromStorage,
             addSession,
+            updateSession,
+            removeSessionById,
             importFileDateToStore,
             restoreSessionDates,
             restoreMetaDates,
