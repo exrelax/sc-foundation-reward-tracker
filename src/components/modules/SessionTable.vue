@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<SessionTableProps>(), {
   linkRecruitAccount: true,
 })
 
-const dateFormatString = 'YYYY-MM-DDTHH:mm'
+const dateFormatString = 'YYYY-MM-DD HH:mm'
 
 const sessions = computed(() => {
   return props.sessions.map((session) => {
@@ -76,8 +76,6 @@ const editEntry = (session: GuidingSession) => {
           <button class="btn btn-outline-secondary" @click="editEntry(session.session)">
             <SvgIcon name="material/edit" />
           </button>
-
-          <SvgIcon name="material/delete" />
         </td>
       </tr>
     </tbody>

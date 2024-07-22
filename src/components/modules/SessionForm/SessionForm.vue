@@ -5,6 +5,7 @@ import {type GuidingSessionRole, type GuidingSessionPayload, type GuidingSession
 import { useGuidingSessionsStore } from '@/stores/guidingSessions'
 import { useToastsStore } from '@/stores/toasts'
 import GuidingCategorySelector from './GuidingCategorySelector.vue'
+import SvgIcon from "@/components/helpers/SvgIcon.vue";
 
 interface SessionFormProps {
   session?: GuidingSession
@@ -121,7 +122,7 @@ const clearForm = () => {
 </script>
 
 <template>
-  <div class="session-form-container mt-3">
+  <div class="session-form mt-3">
     <form @submit.prevent>
       <fieldset>
         <div class="row">
@@ -167,16 +168,26 @@ const clearForm = () => {
 
         <GuidingCategorySelector class="mt-3" v-model="selectedGuideCategories" />
 
-        <button v-if="!sessionToUpdate" class="btn btn-primary" @click="submit">Add</button>
-        <button v-if="sessionToUpdate" class="btn btn-primary" @click="submit">Save</button>
-        <button v-if="sessionToUpdate" class="btn btn-primary" @click="remove">Delete</button>
+        <div class="session-form__buttons mt-3">
+          <button v-if="!sessionToUpdate" class="btn btn-primary" @click="submit">Add</button>
+          <button v-if="sessionToUpdate" class="btn btn-primary" @click="submit">Save</button>
+          <button v-if="sessionToUpdate" class="btn btn-outline-secondary" @click="remove">
+            <SvgIcon name="material/delete" />
+          </button>
+        </div>
       </fieldset>
     </form>
   </div>
 </template>
 
 <style lang="scss">
-.session-form-container {
-  padding: 20px;
+.session-form {
+  padding: var(--padding-md-px);
+}
+
+.session-form__buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-grid-sm-px);
 }
 </style>
