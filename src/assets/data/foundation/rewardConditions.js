@@ -59,7 +59,7 @@ export default [
     accountRole_id: null,
     fromDate: new Date("2024-07-12 18:00"),
     toDate: new Date("2024-07-31 18:00"),
-    guidingCategory_id: "basic",
+    guidingCategory_id: "beginner-basics",
     sessions: 1,
   },
   {

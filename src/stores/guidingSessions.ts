@@ -43,6 +43,14 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             meta.value.updateDate = dayjs().toDate()
         }
 
+        const cleanupAccounts = () => {
+            accounts.value = accounts.value.filter(account => {
+                return sessions.value.some(session => {
+                    return session.roles.some(role => role.account === account.handle)
+                })
+            })
+        }
+
         const createAccount = (handle: string, favorite: boolean = true) => {
             const account = getAccountByHandle.value(handle)
 
@@ -89,6 +97,8 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             }
 
             sessions.value.splice(index, 1)
+
+            cleanupAccounts()
             updateMeta()
 
             return true
@@ -276,6 +286,8 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             session.roles.forEach(role => {
                 createAccount(role.account)
             })
+
+            cleanupAccounts()
             updateMeta()
 
             return true
@@ -304,6 +316,8 @@ export const useGuidingSessionsStore = defineStore(storeName, () => {
             } as GuidingSession
 
             sessions.value.splice(index, 1, updatedSession)
+
+            cleanupAccounts()
             updateMeta()
 
             return true
