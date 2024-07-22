@@ -43,7 +43,7 @@ const selectedGuideCategories = ref( [] as string[])
 
 updateLocalRefs()
 
-watch(props.session as any, () => {
+watch(props as any, () => {
   updateLocalRefs()
 }, { deep: true })
 
